@@ -11,7 +11,9 @@
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
+    "noImplicitAny": false,
     "sourceMap": true,
+    "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "types": [
       "webpack-env"
