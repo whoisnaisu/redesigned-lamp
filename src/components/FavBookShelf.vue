@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <div v-if="$handleStatus.isLoading">
+    <div v-if="isLoading">
       <b-spinner></b-spinner>
     </div>
     <div class="book-shelf" v-else>
       <div v-for="book in favBookLists" :key="book.id">
         <div class="book">
-          <div @click="addFav(book)" class="heart-icon">
+          <div @click="toggleFav(book)" class="heart-icon">
             <i v-if="!isFavorite[book.id]" class="bi bi-heart"></i>
             <i v-else class="bi bi-heart-fill"></i>
           </div>
@@ -25,38 +25,34 @@
 </template>
 
 <script lang="ts">
-import { IBookResp } from "@/interfaces/IBook";
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({
   components: {},
 })
 export default class FavBookShelf extends Vue {
-  isFavorite = {};
-  favBookLists: Array<IBookResp> = [];
-
   beforeMount() {
-    // this.$favs.initializeFromLocalStorage();
+    this.$favs.initializeFromLocalStorage();
   }
 
   mounted() {
-    // localStorage.clear();
-    this.$handleStatus.clearStatus();
-    const favoritesFromLocalStorage = this.$favs.getIsFav;
-    const favBooksFromLocalStorage = this.$favs.getFavBookLists;
-
-    console.log(favoritesFromLocalStorage);
-
-    if (favoritesFromLocalStorage) {
-      this.isFavorite = favoritesFromLocalStorage;
-    }
-    if (favBooksFromLocalStorage) {
-      this.favBookLists = favBooksFromLocalStorage;
-    }
+    this.$status.clearStatus();
   }
 
-  addFav(book: any) {
+  toggleFav(book: any) {
     this.$favs.toggleFavorite(book);
+  }
+
+  get isFavorite() {
+    return this.$favs.getIsFav;
+  }
+
+  get favBookLists() {
+    return this.$favs.getFavBookLists;
+  }
+
+  get isLoading() {
+    return this.$status.getIsLoading;
   }
 }
 </script>

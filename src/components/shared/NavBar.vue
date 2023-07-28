@@ -53,13 +53,17 @@ export default class NavBar extends Vue {
   }
 
   async searchBooks() {
-    this.$handleStatus.setLoading();
+    this.$status.setLoading();
     try {
       this.$books.fetchBooks({ searchText: this.textSearch });
     } catch (err) {
       this.$logError(`searchBooks at ${this.constructor.name}`, err);
-      this.$handleStatus.setError();
+      this.$status.setError();
     }
+  }
+
+  get isLoading() {
+    return this.$status.getIsLoading;
   }
 }
 </script>

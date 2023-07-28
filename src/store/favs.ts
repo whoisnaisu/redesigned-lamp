@@ -20,14 +20,12 @@ export default class FavsStore extends VuexModule {
   private favBookLists: Array<IBookResp> = [];
   private isFavorite: Record<string, boolean> = {};
 
-  @Mutation
-  setFavorites(data: Record<string, boolean>) {
-    this.isFavorite = data;
+  get getFavBookLists() {
+    return this.favBookLists;
   }
 
-  @Mutation
-  setFavBookLists(data: Array<IBookResp>) {
-    this.favBookLists = data;
+  get getIsFav() {
+    return this.isFavorite;
   }
 
   @Action
@@ -47,7 +45,7 @@ export default class FavsStore extends VuexModule {
     const id = book.id;
     const isFav = this.isFavorite[id];
     Vue.set(this.isFavorite, id, !isFav);
-    if (!isFav) {
+    if (!this.isFavorite[id]) {
       this.removeFavoriteFromList(id);
     } else {
       this.addToFavoriteList(book);
@@ -63,20 +61,23 @@ export default class FavsStore extends VuexModule {
   }
 
   @Mutation
+  setFavorites(data: Record<string, boolean>) {
+    this.isFavorite = data;
+  }
+
+  @Mutation
+  setFavBookLists(data: Array<IBookResp>) {
+    this.favBookLists = data;
+  }
+
+  @Mutation
   addToFavoriteList(book: any) {
     this.favBookLists.push(book);
   }
 
   @Mutation
   removeFavoriteFromList(id: string) {
+    Vue.delete(this.isFavorite, id);
     this.favBookLists = this.favBookLists.filter((book) => book.id !== id);
-  }
-
-  get getFavBookLists() {
-    return this.favBookLists;
-  }
-
-  get getIsFav() {
-    return this.isFavorite;
   }
 }
