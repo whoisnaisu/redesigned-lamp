@@ -1,17 +1,17 @@
 <template>
   <div class="home">
-    <book-shelf />
+    <book-detail />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import BookShelf from "@/components/BookShelf.vue";
+import BookDetail from "@/components/BookDetail.vue";
 
 @Component({
   components: {
-    BookShelf,
+    BookDetail,
   },
 })
-export default class HomeView extends Vue {}
+export default class DetailView extends Vue {}
 </script>
