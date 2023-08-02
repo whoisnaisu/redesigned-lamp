@@ -1,23 +1,28 @@
 export interface IBookResp {
   id: string;
-  etag: string;
-  kind: string;
-  selfLink: string;
-  accessInfo: {};
-  searchInfo: {};
-  saleInfo: {
-    isEbook: boolean;
+  etag?: string;
+  kind?: string;
+  selfLink?: string;
+  accessInfo?: {};
+  searchInfo?: {};
+  isAds?: boolean;
+  saleInfo?: {
+    isEbook?: boolean;
   };
-  volumeInfo: {
-    title: string;
-    authors: string[];
-    publishedDate: string;
-    imageLinks: {
+  volumeInfo?: {
+    title?: string;
+    authors?: string[];
+    publishedDate?: string;
+    description?: string;
+    pageCount?: number;
+    industryIdentifiers?: [
+      {
+        type: string;
+        identifier: string;
+      }
+    ];
+    imageLinks?: {
       thumbnail?: string;
     };
   };
-}
-
-export interface IAds extends IBookResp {
-  isAds: boolean;
 }

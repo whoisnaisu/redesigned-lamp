@@ -3,6 +3,21 @@
     flex-direction: column;
     justify-content: center;
     width: 100vw;
+    padding: 0 0 5rem 0;
+}
+
+.action-container {
+    display: flex;
+    width: 5rem;
+    justify-content: space-evenly;
+}
+
+.detail-icon {
+    display: flex;
+    justify-content: center;
+    height: 1.5rem;
+    width: 1.5rem;
+    border-radius: 10px;
 }
 
 .book-shelf {
@@ -48,12 +63,12 @@
     z-index: 999;
 }
 
-.heart-icon {
+.bi {
     cursor: pointer;
     transition: 0.9s;
 }
 
-.heart-icon:hover {
+.bi:hover {
     transform: scale(110%);
 }
 
@@ -61,12 +76,8 @@
     color: rgb(208, 109, 109);
 }
 
-.book-title {
+.description {
     font-size: 0.8rem;
     overflow-y: hidden;
     max-height: 5rem;
-}
-
-.book-author {
-    font-size: 0.8rem;
 }

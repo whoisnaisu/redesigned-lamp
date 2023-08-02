@@ -1,7 +1,11 @@
 <template>
   <nav>
-    <div>
-      <div class="magnify-glass">
+    <div class="logo-container" @click="backToHome">
+      <div
+        class="magnify-glass"
+        v-b-tooltip.hover.bottom
+        title="Search any books!"
+      >
         <img :src="magnifyingGlass" alt="" />
       </div>
       <div class="find-a-book">
@@ -16,28 +20,48 @@
         <div class="k">k</div>
       </div>
     </div>
-    <div>
-      <b-form-select v-model="selectedOrder" :options="orderOptions">
-      </b-form-select>
-      <b-form-select v-model="selectedFilter" :options="filterOptions">
-      </b-form-select>
-      <input
-        class="search-input"
-        type="text"
-        placeholder="Search any books!"
-        @keyup.enter="searchBooks"
-        v-model="textSearch"
-      />
+    <div class="search-and-filter-container">
+      <div class="input-container">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Search any books!"
+          @keyup.enter="searchBooks"
+          v-model="textSearch"
+        />
+        <span class="icon-right" @click="clearSearch">
+          <i class="bi bi-x"></i>
+        </span>
+      </div>
       <button class="search-button" type="button" @click="searchBooks">
         Search
       </button>
+      <div>
+        <b-form-select
+          class="drop-down"
+          v-model="selectedOrder"
+          :options="orderOptions"
+        >
+        </b-form-select>
+      </div>
+      <div>
+        <b-form-select
+          class="drop-down"
+          v-model="selectedFilter"
+          :options="filterOptions"
+        ></b-form-select>
+      </div>
     </div>
     <div>
-      <router-link to="/">
+      <router-link to="/" v-b-tooltip.hover.bottom title="Book list section.">
         <i class="bi bi-book"></i>
       </router-link>
       |
-      <router-link to="/fav">
+      <router-link
+        to="/fav"
+        v-b-tooltip.hover.bottom
+        title="Favourite section."
+      >
         <i class="bi bi-heart-fill"></i>
       </router-link>
     </div>
@@ -67,6 +91,9 @@ export default class NavBar extends Vue {
     { value: "newest", text: "Newest" },
   ];
 
+  showOrderSelect: boolean = false;
+  showFilterSelect: boolean = false;
+
   mounted() {
     this.searchBooks();
   }
@@ -84,7 +111,6 @@ export default class NavBar extends Vue {
       await this.searchBooks();
     }
   }
-
   async searchBooks() {
     this.$status.setLoading();
     try {
@@ -102,6 +128,24 @@ export default class NavBar extends Vue {
 
   get isLoading() {
     return this.$status.getIsLoading;
+  }
+
+  clearSearch() {
+    this.textSearch = "";
+  }
+
+  toggleFilterSelect() {
+    this.showFilterSelect = !this.showFilterSelect;
+  }
+
+  toggleOrderSelect() {
+    this.showOrderSelect = !this.showOrderSelect;
+  }
+
+  backToHome() {
+    if (this.$route.path !== "/") {
+      this.$router.push("/");
+    }
   }
 }
 </script>

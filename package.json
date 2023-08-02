@@ -12,6 +12,8 @@
     "bootstrap": "^5.3.1",
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
+    "element-ui": "^2.15.13",
+    "primevue": "^3.31.0",
     "vue": "^2.7.14",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^9.1.2",

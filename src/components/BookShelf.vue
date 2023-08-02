@@ -6,26 +6,32 @@
     <div class="book-shelf" v-else>
       <div v-for="book in modifiedBookLists" :key="book.id">
         <div class="book">
-          <div @click="toggleFav(book)" class="heart-icon">
-            <un-fav-icon v-if="!isFavorite[book.id]" />
-            <fav-icon v-else />
+          <div v-if="!book.isAds" @click="toggleFav(book)">
+            <div class="action-container">
+              <un-fav-icon v-if="!isFavorite[book.id]" />
+              <fav-icon v-else />
+              <div class="detail-icon" ref="detail" @click="showDetail(book)">
+                <i
+                  class="bi bi-search"
+                  v-b-tooltip.hover.bottom
+                  title=" See the detail."
+                ></i>
+              </div>
+            </div>
           </div>
           <div>
             <img :src="book.volumeInfo?.imageLinks?.thumbnail" alt="" />
           </div>
-          <p class="book-title">
-            {{ book?.volumeInfo?.title }}
-            <b-button ref="detail" @click="showDetail(book)">
-              <i
-                class="bi bi-search"
-                v-b-tooltip.hover.bottom
-                title=" See the detail."
-              ></i>
-            </b-button>
-          </p>
-          <p class="book-author">
+          <div v-if="!book.isAds">
+            <p class="description">
+              {{ book?.volumeInfo?.title }}
+            </p>
+          </div>
+
+          <p class="description" v-if="!book.isAds">
             {{ book?.volumeInfo?.authors?.[0] ?? "No authors info." }}
           </p>
+          <p v-else class="description">Advertisement.</p>
           <div class="e-book" v-if="book.saleInfo?.isEbook">E-BOOK</div>
         </div>
       </div>
@@ -36,7 +42,6 @@
 <script lang="ts">
 import { IBookResp } from "@/interfaces/IBook";
 import { Component, Vue } from "vue-property-decorator";
-import { IAds } from "@/interfaces/IBook";
 
 @Component({
   components: {},
@@ -61,11 +66,13 @@ export default class BookShelf extends Vue {
   get modifiedBookLists() {
     const originalBookLists = this.bookLists;
     const ads1 = {
+      id: "ads1",
       isAds: true,
-    } as IAds;
+    };
     const ads2 = {
+      id: "ads2",
       isAds: true,
-    } as IAds;
+    };
     const newBookLists = [...originalBookLists];
     const center = Math.floor(newBookLists.length / 2);
     newBookLists.splice(center, 0, ads1);
@@ -85,8 +92,7 @@ export default class BookShelf extends Vue {
     return this.$status.getIsLoading;
   }
 
-  showDetail(book) {
-    console.log(`click\n`, book);
+  showDetail(book: IBookResp) {
     this.$books.setBookById(book);
     this.$router.push(`/book/${book.id}`);
   }
