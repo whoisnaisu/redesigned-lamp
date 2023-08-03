@@ -53,7 +53,6 @@ export default class BookDetail extends Vue {
     if (!this.book?.volumeInfo?.title) {
       this.fetchBook();
     }
-    console.log(this.book);
   }
 
   async fetchBook() {
