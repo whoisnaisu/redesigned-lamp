@@ -27,7 +27,10 @@
             >Industry Identifiers</strong
           >
           <br />
-          <span v-for="item in book.volumeInfo?.industryIdentifiers">
+          <span
+            v-for="(item, index) in book.volumeInfo?.industryIdentifiers"
+            :key="index"
+          >
             {{ item.type }}
             {{ item.identifier }}
           </span>
@@ -36,41 +39,39 @@
           <strong>Link:</strong>
           <a :href="book.selfLink"> {{ book.selfLink }}</a>
         </p>
-        <div class="e-book" v-if="book.saleInfo?.isEbook">E-BOOK</div>
+        <div v-if="book.saleInfo?.isEbook" class="e-book">E-BOOK</div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Watch, Vue } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator"
 
 @Component({
-  components: {},
+  components: {}
 })
 export default class BookDetail extends Vue {
   mounted() {
     if (!this.book?.volumeInfo?.title) {
-      this.fetchBook();
+      this.fetchBook()
     }
   }
 
   async fetchBook() {
     try {
-      this.$books.fetchBookById(this.bookId);
+      await this.$books.fetchBookById(this.bookId)
     } catch (err) {
-      this.$logError(`fetchBook`, err);
+      this.$logError(`fetchBook`, err)
     }
   }
 
   get bookId() {
-    return this.$route.params.id;
+    return this.$route.params.id
   }
 
   get book() {
-    return this.$books.getBookById;
+    return this.$books.getBookById
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

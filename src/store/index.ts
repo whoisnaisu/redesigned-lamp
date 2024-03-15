@@ -1,8 +1,6 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import Vue from "vue"
+import Vuex, { Store } from "vuex"
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
-import { Store } from "vuex";
-
-export const store = new Store({});
+export const store = new Store({})

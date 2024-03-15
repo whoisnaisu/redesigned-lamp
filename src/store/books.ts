@@ -1,13 +1,13 @@
-import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import { $axios } from "@/utils/axios-instance";
-import { store } from "./index";
-import { IBookResp } from "@/interfaces/IBook";
-import { IBookPayload } from "@/interfaces/IPayload";
-import logError from "@/utils/log-error";
+import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators"
+import { store } from "./index"
+import { $axios } from "@/utils/axios-instance"
+import { IBookResp } from "@/interfaces/IBook"
+import { IBookPayload } from "@/interfaces/IPayload"
+import logError from "@/utils/log-error"
 
 declare module "vue/types/vue" {
   interface Vue {
-    $books: BookStore;
+    $books: BookStore
   }
 }
 
@@ -16,62 +16,62 @@ declare module "vue/types/vue" {
   store,
   dynamic: true,
   namespaced: true,
-  stateFactory: true,
+  stateFactory: true
 })
 export default class BookStore extends VuexModule {
-  private booksData: Array<IBookResp> = [];
-  private book: IBookResp = {} as IBookResp;
-  private readonly GOOGLE_API: string = `https://www.googleapis.com/books/v1/volumes`;
+  private booksData: Array<IBookResp> = []
+  private book: IBookResp = {} as IBookResp
+  private readonly GOOGLE_API: string = `https://www.googleapis.com/books/v1/volumes`
 
   @Mutation
   setBooksData(data: Array<IBookResp>) {
-    this.booksData = data;
+    this.booksData = data
   }
 
   @Mutation
   setBook(data: IBookResp) {
-    this.book = data;
+    this.book = data
   }
 
   @Action
   async fetchBooks(payload: IBookPayload) {
-    const { searchText, filter, order } = payload;
-    if (!searchText) return;
+    const { searchText, filter, order } = payload
+    if (!searchText) return
     try {
-      let api = `${this.GOOGLE_API}?q=${searchText}&orderBy=${order}&maxResults=10`;
+      let api = `${this.GOOGLE_API}?q=${searchText}&orderBy=${order}&maxResults=10`
       if (filter) {
-        api += `&filter=${filter}`;
+        api += `&filter=${filter}`
       }
-      const { data } = await $axios.get(api);
-      this.setBooksData(data.items);
+      const { data } = await $axios.get(api)
+      this.setBooksData(data.items)
     } catch (err) {
-      logError(`fetchBooks at ${this.constructor.name}`, err);
+      logError(`fetchBooks at ${this.constructor.name}`, err)
     }
   }
 
   @Action
   async fetchBookById(id: string) {
-    if (!id) return;
+    if (!id) return
     try {
       const { data } = await $axios.get(
         `https://www.googleapis.com/books/v1/volumes/${id}`
-      );
-      this.setBook(data);
+      )
+      this.setBook(data)
     } catch (err) {
-      logError(`fetchBookById at ${this.constructor.name}`, err);
+      logError(`fetchBookById at ${this.constructor.name}`, err)
     }
   }
 
   @Action
   setBookById(payload: IBookResp) {
-    this.setBook(payload);
+    this.setBook(payload)
   }
 
   get getBooksData() {
-    return this.booksData;
+    return this.booksData
   }
 
   get getBookById() {
-    return this.book;
+    return this.book
   }
 }

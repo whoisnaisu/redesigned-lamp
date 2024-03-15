@@ -12,8 +12,6 @@
     "bootstrap": "^5.3.1",
     "bootstrap-vue": "^2.23.1",
     "core-js": "^3.8.3",
-    "element-ui": "^2.15.13",
-    "primevue": "^3.31.0",
     "vue": "^2.7.14",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^9.1.2",
@@ -22,15 +20,19 @@
     "vuex-module-decorators": "^2.0.0"
   },
   "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
     "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-nuxt": "^4.0.0",
     "node-sass": "^9.0.0",
     "sass-loader": "^13.3.2",
     "style-loader": "^3.3.3",
     "typescript": "~4.5.5",
+    "vue-eslint-parser": "^9.3.2",
     "vue-template-compiler": "^2.6.14"
   },
   "browserslist": [
