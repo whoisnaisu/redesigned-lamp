@@ -15,6 +15,9 @@ export interface IBookResp {
     publishedDate?: string;
     description?: string;
     pageCount?: number;
+    categories?: string[];
+    averageRating?: number;
+    infoLink?: string;
     industryIdentifiers?: [
       {
         type: string;
@@ -23,6 +26,7 @@ export interface IBookResp {
     ];
     imageLinks?: {
       thumbnail?: string;
+      smallThumbnail?: string;
     };
   };
 }

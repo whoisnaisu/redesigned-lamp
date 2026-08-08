@@ -1,41 +1,40 @@
 <template>
-  <div class="container">
-    <div v-if="isLoading">
-      <b-spinner></b-spinner>
-    </div>
-    <div v-else class="book-shelf">
-      <div v-for="book in modifiedBookLists" :key="book.id">
-        <div class="book">
-          <div v-if="!book.isAds" @click="toggleFav(book)">
-            <div class="action-container">
-              <un-fav-icon v-if="!isFavorite[book.id]" />
-              <fav-icon v-else />
-              <div ref="detail" class="detail-icon" @click="showDetail(book)">
-                <i
-                  v-b-tooltip.hover.bottom
-                  class="bi bi-search"
-                  title=" See the detail."
-                ></i>
-              </div>
-            </div>
-          </div>
-          <div>
-            <img :src="book.volumeInfo?.imageLinks?.thumbnail" alt="" />
-          </div>
-          <div v-if="!book.isAds">
-            <p class="description">
-              {{ book?.volumeInfo?.title }}
-            </p>
-          </div>
-
-          <p v-if="!book.isAds" class="description">
-            {{ book?.volumeInfo?.authors?.[0] ?? "No authors info." }}
-          </p>
-          <p v-else class="description">Advertisement.</p>
-          <div v-if="book.saleInfo?.isEbook" class="e-book">E-BOOK</div>
-        </div>
+  <div class="page-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Powered by Google Books</p>
+        <h1>A quieter way to find<br /><em>your next book.</em></h1>
+        <p class="hero-copy">Search the world’s books, skim the essentials, and keep a personal shelf—all without the clutter.</p>
       </div>
-    </div>
+      <div class="hero-art" aria-hidden="true"><span>Read</span><span>Think</span><span>Keep</span></div>
+    </section>
+
+    <section class="results-section" aria-live="polite">
+      <div class="section-heading">
+        <div><p class="eyebrow">The collection</p><h2>{{ resultTitle }}</h2></div>
+        <span v-if="!isLoading && !isError" class="result-count">{{ totalItems.toLocaleString() }} results</span>
+      </div>
+
+      <div v-if="isLoading" class="book-grid">
+        <div v-for="index in 8" :key="index" class="book-card skeleton"><div class="cover-placeholder"></div><span></span><span></span></div>
+      </div>
+      <div v-else-if="isError" class="state-card error-state">
+        <span class="state-icon">!</span><h2>The shelf could not load</h2><p>{{ errorMessage }}</p>
+      </div>
+      <div v-else-if="!bookLists.length" class="state-card"><span class="state-icon">?</span><h2>No books found</h2><p>Try a broader title, author, or subject.</p></div>
+      <div v-else class="book-grid">
+        <article v-for="book in bookLists" :key="book.id" class="book-card" @click="showDetail(book)">
+          <div class="cover-wrap">
+            <img v-if="coverFor(book)" :src="coverFor(book)" :alt="`${book.volumeInfo?.title || 'Book'} cover`" @error="markCoverFailed(book.id)" />
+            <div v-else class="cover-fallback"><span>{{ initials(book) }}</span></div>
+            <button class="save-button" type="button" :aria-label="isFavorite[book.id] ? 'Remove from saved' : 'Save book'" @click.stop="toggleFav(book)">
+              <i :class="isFavorite[book.id] ? 'bi bi-bookmark-fill' : 'bi bi-bookmark'"></i>
+            </button>
+          </div>
+          <div class="book-copy"><p class="book-kicker">{{ book.volumeInfo?.publishedDate || 'Publication date unknown' }}</p><h3>{{ book.volumeInfo?.title || 'Untitled' }}</h3><p>{{ authors(book) }}</p></div>
+        </article>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -45,54 +44,24 @@ import { IBookResp } from "@/interfaces/IBook"
 
 @Component
 export default class BookShelf extends Vue {
-  beforeMount() {
-    this.$favs.initializeFromLocalStorage()
+  failedCovers: Record<string, boolean> = {}
+  beforeMount() { this.$favs.initializeFromLocalStorage() }
+  get bookLists() { return this.$books.getBooksData }
+  get totalItems() { return this.$books.getTotalItems }
+  get isFavorite() { return this.$favs.getIsFav }
+  get isLoading() { return this.$status.getIsLoading }
+  get isError() { return this.$status.getIsError }
+  get errorMessage() { return this.$status.getErrorMessage }
+  get resultTitle() { return this.bookLists.length ? "Books worth opening" : "Browse the shelves" }
+  toggleFav(book: IBookResp) { this.$favs.toggleFavorite(book) }
+  authors(book: IBookResp) { return book.volumeInfo?.authors?.join(", ") || "Unknown author" }
+  coverFor(book: IBookResp) {
+    if (this.failedCovers[book.id]) return ""
+    const url = book.volumeInfo?.imageLinks?.thumbnail || book.volumeInfo?.imageLinks?.smallThumbnail || ""
+    return url.replace(/^http:/, "https:")
   }
-
-  mounted() {
-    this.$status.clearStatus()
-  }
-
-  toggleFav(book: IBookResp) {
-    this.$favs.toggleFavorite(book)
-  }
-
-  get bookLists() {
-    return this.$books.getBooksData
-  }
-
-  get modifiedBookLists() {
-    const originalBookLists = this.bookLists
-    const ads1 = {
-      id: "ads1",
-      isAds: true
-    }
-    const ads2 = {
-      id: "ads2",
-      isAds: true
-    }
-    const newBookLists = [...originalBookLists]
-    const center = Math.floor(newBookLists.length / 2)
-    newBookLists.splice(center, 0, ads1)
-    newBookLists.push(ads2)
-    return newBookLists
-  }
-
-  get isFavorite() {
-    return this.$favs.getIsFav
-  }
-
-  get favBookLists() {
-    return this.$favs.getFavBookLists
-  }
-
-  get isLoading() {
-    return this.$status.getIsLoading
-  }
-
-  showDetail(book: IBookResp) {
-    this.$books.setBookById(book)
-    this.$router.push(`/book/${book.id}`)
-  }
+  markCoverFailed(id: string) { this.failedCovers = { ...this.failedCovers, [id]: true } }
+  initials(book: IBookResp) { return (book.volumeInfo?.title || "B").split(/\s+/).slice(0, 2).map(word => word[0]).join("").toUpperCase() }
+  showDetail(book: IBookResp) { this.$books.setBookById(book); this.$router.push(`/book/${book.id}`) }
 }
 </script>

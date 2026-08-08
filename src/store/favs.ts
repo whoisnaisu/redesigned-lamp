@@ -33,10 +33,10 @@ export default class FavsStore extends VuexModule {
     const favoritesFromLocalStorage = localStorage.getItem("favorites");
     const favBooksFromLocalStorage = localStorage.getItem("fav-books");
     if (favoritesFromLocalStorage) {
-      this.setFavorites(JSON.parse(favoritesFromLocalStorage));
+      this.context.commit("setFavorites", JSON.parse(favoritesFromLocalStorage));
     }
     if (favBooksFromLocalStorage) {
-      this.setFavBookLists(JSON.parse(favBooksFromLocalStorage));
+      this.context.commit("setFavBookLists", JSON.parse(favBooksFromLocalStorage));
     }
   }
 
@@ -46,12 +46,12 @@ export default class FavsStore extends VuexModule {
     const isFav = this.isFavorite[id];
     Vue.set(this.isFavorite, id, !isFav);
     if (!this.isFavorite[id]) {
-      this.removeFavoriteFromList(id);
+      this.context.commit("removeFavoriteFromList", id);
     } else {
-      this.addToFavoriteList(book);
+      this.context.commit("addToFavoriteList", book);
     }
 
-    this.saveFavoritesToLocalStorage();
+    this.context.dispatch("saveFavoritesToLocalStorage");
   }
 
   @Action

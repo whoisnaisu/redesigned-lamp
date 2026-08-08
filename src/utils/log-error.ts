@@ -9,9 +9,11 @@ declare module "vue/types/vue" {
 }
 
 function logError(action: string, err: any): void {
-  Vue.prototype.$logError = function (action: string, err: any) {
-    console.error(`${errMessage} ${action}\n`, err);
-  };
+  console.error(`${errMessage} ${action}\n`, err);
 }
+
+Vue.prototype.$logError = function (action: string, err: any) {
+  logError(action, err);
+};
 
 export default logError;

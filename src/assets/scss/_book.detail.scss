@@ -1,69 +1,12 @@
-.detail-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 5rem 0 5rem 0;
-}
-
-.detail-card {
-    display: flex;
-}
-
-.detail-img {
-    height: 100%;
-    background-color: red;
-
-    img {
-        height: 100%;
-    }
-}
-
-%glass-board-common-style {
-    display: flex;
-    flex-direction: column;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: saturate(200%) blur(30px);
-    box-shadow: 1px;
-    height: 40rem;
-    min-height: 22rem;
-    margin: 1rem 0.5rem 1rem 0.5rem;
-    padding: 2rem;
-    position: relative;
-    z-index: 1;
-    overflow: visible;
-    transition: 0.6s;
-}
-
-.book-detail-left {
-    @extend %glass-board-common-style;
-    width: fit-content;
-    align-items: center;
-}
-
-.book-detail-right {
-    @extend %glass-board-common-style;
-    width: 50rem;
-    justify-content: space-between;
-    background: rgba(255, 255, 255, 0.61);
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    p {
-        font-size: 0.9rem;
-    }
-
-    a {
-        text-decoration: none;
-    }
-
-    .book-detail-desc {
-        max-height: 10rem;
-        overflow-y: scroll;
-    }
-
-}
+.back-button { margin-bottom:30px; border:0; color:var(--muted); background:transparent; font-weight:700; cursor:pointer; }
+.back-button i { margin-right:7px; }
+.detail-card { display:grid; grid-template-columns:minmax(260px,380px) 1fr; gap:clamp(40px,7vw,90px); padding:clamp(30px,6vw,72px); border:1px solid var(--line); background:var(--paper); }
+.detail-cover { display:flex; align-items:center; justify-content:center; min-height:460px; padding:30px; background:#e5ddd0; }
+.detail-cover img { width:100%; max-height:480px; object-fit:contain; filter:drop-shadow(9px 12px 10px rgba(36,33,29,.25)); }
+.detail-cover .cover-fallback { min-height:380px; }
+.detail-copy { align-self:center; }
+.detail-copy h1 { margin:.7rem 0 .6rem; font-family:'DM Serif Display',serif; font-size:clamp(2.4rem,5vw,4.4rem); font-weight:400; line-height:1; }
+.detail-author { color:var(--muted); font-size:1.08rem; }
+.meta-row { display:flex; flex-wrap:wrap; gap:10px 24px; margin:28px 0; padding:16px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--muted); font-size:.82rem; font-weight:700; }
+.description { max-width:680px; margin-bottom:32px; color:#575149; line-height:1.75; }
+@media(max-width:760px){.detail-card{grid-template-columns:1fr;padding:24px}.detail-cover{min-height:340px}.detail-cover img{max-height:360px}}

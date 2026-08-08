@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import FavIcon from "@/components/shared/FavIcon.vue";
 import UnFavIcon from "@/components/shared/UnFavIcon.vue";
+import "@/utils/log-error";
 
 Vue.prototype.$books = getModule(BookStore);
 Vue.prototype.$favs = getModule(FavsStore);

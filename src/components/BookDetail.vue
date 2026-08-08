@@ -1,77 +1,20 @@
 <template>
-  <div class="detail-container">
-    <div class="detail-card">
-      <div class="book-detail-left">
-        <div class="detail-img">
-          <img :src="book.volumeInfo?.imageLinks?.thumbnail" alt="" />
-        </div>
-      </div>
-      <div class="book-detail-right">
-        <div>
-          <h1>Book Detail <i class="bi-zoom-in"></i></h1>
-          <br />
-        </div>
-        <p><strong>Title:</strong> {{ book?.volumeInfo?.title }}</p>
-        <p v-if="!book.isAds">
-          <strong>Author:</strong>
-          {{ book?.volumeInfo?.authors?.[0] ?? "No authors info." }}
-        </p>
-        <p>
-          <strong>Published date:</strong> {{ book.volumeInfo?.publishedDate }}
-        </p>
-        <p style="text-decoration: underline"><strong>Description</strong></p>
-        <p class="book-detail-desc" v-html="book.volumeInfo?.description"></p>
-        <p><strong>pageCount:</strong> {{ book.volumeInfo?.pageCount }}</p>
-        <p>
-          <strong style="text-decoration: underline"
-            >Industry Identifiers</strong
-          >
-          <br />
-          <span
-            v-for="(item, index) in book.volumeInfo?.industryIdentifiers"
-            :key="index"
-          >
-            {{ item.type }}
-            {{ item.identifier }}
-          </span>
-        </p>
-        <p>
-          <strong>Link:</strong>
-          <a :href="book.selfLink"> {{ book.selfLink }}</a>
-        </p>
-        <div v-if="book.saleInfo?.isEbook" class="e-book">E-BOOK</div>
-      </div>
-    </div>
+  <div class="page-shell detail-page">
+    <button class="back-button" type="button" @click="$router.back()"><i class="bi bi-arrow-left"></i> Back to collection</button>
+    <div v-if="isLoading" class="state-card"><h2>Opening the book…</h2></div>
+    <article v-else class="detail-card">
+      <div class="detail-cover"><img v-if="cover" :src="cover" :alt="`${book.volumeInfo?.title || 'Book'} cover`" /><div v-else class="cover-fallback">{{ initials }}</div></div>
+      <div class="detail-copy"><p class="eyebrow">{{ book.volumeInfo?.categories?.[0] || 'Book details' }}</p><h1>{{ book.volumeInfo?.title || 'Untitled' }}</h1><p class="detail-author">by {{ book.volumeInfo?.authors?.join(', ') || 'Unknown author' }}</p><div class="meta-row"><span>{{ book.volumeInfo?.publishedDate || 'Date unknown' }}</span><span>{{ book.volumeInfo?.pageCount ? `${book.volumeInfo.pageCount} pages` : 'Length unknown' }}</span><span v-if="book.volumeInfo?.averageRating">★ {{ book.volumeInfo.averageRating }}</span></div><div class="description" v-html="book.volumeInfo?.description || 'No description is available for this title.'"></div><a v-if="book.volumeInfo?.infoLink" class="primary-button" :href="book.volumeInfo.infoLink" target="_blank" rel="noopener">View on Google Books <i class="bi bi-arrow-up-right"></i></a></div>
+    </article>
   </div>
 </template>
-
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator"
-
-@Component({
-  components: {}
-})
-export default class BookDetail extends Vue {
-  mounted() {
-    if (!this.book?.volumeInfo?.title) {
-      this.fetchBook()
-    }
-  }
-
-  async fetchBook() {
-    try {
-      await this.$books.fetchBookById(this.bookId)
-    } catch (err) {
-      this.$logError(`fetchBook`, err)
-    }
-  }
-
-  get bookId() {
-    return this.$route.params.id
-  }
-
-  get book() {
-    return this.$books.getBookById
-  }
+@Component export default class BookDetail extends Vue {
+  async mounted() { if (!this.book?.volumeInfo?.title || this.book.id !== this.$route.params.id) { this.$status.setLoading(); try { await this.$books.fetchBookById(this.$route.params.id) } finally { this.$status.clearStatus() } } }
+  get book() { return this.$books.getBookById }
+  get isLoading() { return this.$status.getIsLoading }
+  get cover() { return (this.book.volumeInfo?.imageLinks?.thumbnail || '').replace(/^http:/, 'https:') }
+  get initials() { return (this.book.volumeInfo?.title || 'B').split(/\s+/).slice(0,2).map(word => word[0]).join('').toUpperCase() }
 }
 </script>

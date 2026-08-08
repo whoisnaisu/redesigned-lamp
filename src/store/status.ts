@@ -1,61 +1,22 @@
-import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import { store } from "./index";
+import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators"
+import { store } from "./index"
 
-declare module "vue/types/vue" {
-  interface Vue {
-    $status: StatusStore;
-  }
-}
+declare module "vue/types/vue" { interface Vue { $status: StatusStore } }
 
-@Module({
-  name: "status",
-  store,
-  dynamic: true,
-  namespaced: true,
-  stateFactory: true,
-})
+@Module({ name: "status", store, dynamic: true, namespaced: true, stateFactory: true })
 export default class StatusStore extends VuexModule {
-  private isLoading: boolean = false;
-  private isError: boolean = false;
+  private isLoading = false
+  private errorMessage = ""
 
-  get getIsLoading() {
-    return this.isLoading;
-  }
+  get getIsLoading() { return this.isLoading }
+  get getIsError() { return Boolean(this.errorMessage) }
+  get getErrorMessage() { return this.errorMessage }
 
-  get getIsError() {
-    return this.isError;
-  }
+  @Mutation updateLoading() { this.isLoading = true; this.errorMessage = "" }
+  @Mutation updateError(message: string) { this.errorMessage = message; this.isLoading = false }
+  @Mutation updateStatus() { this.isLoading = false; this.errorMessage = "" }
 
-  @Mutation
-  updateLoading() {
-    this.isLoading = true;
-    this.isError = false;
-  }
-
-  @Mutation
-  updateEror() {
-    this.isError = true;
-    this.isLoading = false;
-  }
-
-  @Mutation
-  updateStatus() {
-    this.isLoading = false;
-    this.isError = false;
-  }
-
-  @Action
-  setLoading() {
-    this.updateLoading();
-  }
-
-  @Action
-  setError() {
-    this.updateEror();
-  }
-
-  @Action
-  clearStatus() {
-    this.updateStatus();
-  }
+  @Action setLoading() { this.context.commit("updateLoading") }
+  @Action setError(message = "Google Books could not be reached. Please try again.") { this.context.commit("updateError", message) }
+  @Action clearStatus() { this.context.commit("updateStatus") }
 }
